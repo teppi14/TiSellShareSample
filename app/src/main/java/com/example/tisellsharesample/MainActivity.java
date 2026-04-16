@@ -108,8 +108,22 @@ public class MainActivity extends AppCompatActivity {
                 } else if(Objects.equals(text, "Mercari")){
                     shareIntent.setPackage("com.kouzoh.mercari"); // メルカリに限定
                 }
-                //Share menu
-                context.startActivity(Intent.createChooser(shareIntent, "共有する"));
+
+                if (shareIntent != null) {
+                    // アプリがインストールされている場合、起動
+                    //Share menu
+                    context.startActivity(Intent.createChooser(shareIntent, "共有する"));
+                } else {
+                    // 未インストールの場合、Playストアを開く
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + shareIntent.getPackage())));
+                    } catch (android.content.ActivityNotFoundException anfe) {
+                        // Playストアアプリがない場合、ブラウザで開く
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com" + shareIntent.getPackage())));
+                    }
+                }
+
+
             }
 
         } catch (IOException e) {
